@@ -7,3 +7,7 @@ test("Check Flaky", { tag: "@quarantine" }, async ({ page }) => {
     throw new Error("Random error");
   }
 });
+test("Run For PR Execution", async ({ page }) => {
+  console.log("Running test 2");
+  expect(1).toBe(1);
+});
