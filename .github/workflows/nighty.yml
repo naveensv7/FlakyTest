@@ -1,0 +1,47 @@
+name: Nigh run
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  Nightly_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install ALLure
+        run: |
+          npm install allure-playwright
+          npm install allure-commandline
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Install dependencies
+        run: npm ci --deps
+      - name: Run Playwright
+        run: npm run test -- --grep @quarantine
+      - name: Generate allure report
+        if: always()
+        run: npx allure generate allure-results --clean
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-PR Report
+          path: allure-report
