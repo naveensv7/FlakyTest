@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --deps
       - name: Run Playwright
-        run: npm run test --grep-invert @quarantine
+        run: npm run test -- --grep-invert @quarantine
       - name: Generate allure report
         if: always()
         run: npx allure generate allure-results --clean
